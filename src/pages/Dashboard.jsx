@@ -5,7 +5,9 @@ import {
   upcomingDeadlines,
   teamLoad,
   recentProjects,
+  recentActivity,
 } from "../data/dashboard";
+import RecentActivity from "../components/dashboard/RecentActivity";
 
 function KpiIcon({ type }) {
   const icons = {
@@ -294,6 +296,8 @@ function Dashboard() {
           </div>
         </article>
       </section>
+
+      <RecentActivity items={recentActivity} />
     </div>
   );
 }

@@ -1,0 +1,102 @@
+.recent-activity-section {
+  margin-top: 18px;
+}
+
+.recent-activity-card {
+  padding: 22px;
+}
+
+.recent-activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.recent-activity-item {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  border-top: 1px solid #edf0f4;
+}
+
+.recent-activity-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+}
+
+.recent-activity-icon.document-added,
+.recent-activity-icon.document-sent {
+  color: #2866a8;
+  background: #edf3fa;
+}
+
+.recent-activity-icon.client-approved,
+.recent-activity-icon.stage-finished {
+  color: #34845a;
+  background: #eaf7ef;
+}
+
+.recent-activity-icon.deadline-moved {
+  color: #b77317;
+  background: #fff4df;
+}
+
+.recent-activity-content {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recent-activity-content strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: #263247;
+}
+
+.recent-activity-content span {
+  font-size: 11px;
+  color: #7a8596;
+}
+
+.recent-activity-meta {
+  min-width: 78px;
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.recent-activity-meta span {
+  font-size: 10px;
+  color: #8a95a5;
+  white-space: nowrap;
+}
+
+.recent-activity-meta strong {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4c5a70;
+}
+
+@media (max-width: 720px) {
+  .recent-activity-item {
+    align-items: flex-start;
+    padding: 12px 0;
+  }
+
+  .recent-activity-meta {
+    align-items: flex-start;
+  }
+}

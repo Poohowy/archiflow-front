@@ -121,10 +121,54 @@ const recentProjects = [
 },
 ]
 
+const recentActivity = [
+  {
+    id: 'act-01',
+    type: 'document-added',
+    title: 'Dodano dokument',
+    details: 'Rzut parteru v4 · Villa Kraków',
+    date: 'Dzisiaj',
+    time: '14:32',
+  },
+  {
+    id: 'act-02',
+    type: 'client-approved',
+    title: 'Klient zaakceptował koncepcję',
+    details: 'Apartamenty Wrocław · etap koncepcyjny',
+    date: 'Dzisiaj',
+    time: '11:18',
+  },
+  {
+    id: 'act-03',
+    type: 'deadline-moved',
+    title: 'Przesunięto termin oddania',
+    details: 'House Gdańsk · +4 dni',
+    date: 'Wczoraj',
+    time: '16:47',
+  },
+  {
+    id: 'act-04',
+    type: 'stage-finished',
+    title: 'Zakończono etap projektu',
+    details: 'Dom Warszawa · nadzór autorski',
+    date: 'Wczoraj',
+    time: '09:05',
+  },
+  {
+    id: 'act-05',
+    type: 'document-sent',
+    title: 'Przesłano dokument do klienta',
+    details: 'Office Warsaw · zestaw rysunków wykonawczych',
+    date: '25.08.2026',
+    time: '18:10',
+  },
+]
+
 export {
   kpis,
   attentionProjects,
   upcomingDeadlines,
   teamLoad,
   recentProjects,
+  recentActivity,
 }
