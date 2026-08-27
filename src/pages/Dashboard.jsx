@@ -1,4 +1,5 @@
 import "./Dashboard.css";
+import { ClockAlert, FolderKanban, TriangleAlert, Users } from "lucide-react";
 import {
   kpis,
   attentionProjects,
@@ -9,46 +10,19 @@ import {
 } from "../data/dashboard";
 import RecentActivity from "../components/dashboard/RecentActivity";
 
-function KpiIcon({ type }) {
-  const icons = {
-    projects: (
-      <>
-        <rect x="4" y="4" width="16" height="16" rx="2" />
-        <path d="M8 8h3M8 12h8M8 16h5" />
-      </>
-    ),
-    attention: (
-      <>
-        <path d="M12 4 21 20H3L12 4Z" />
-        <path d="M12 9v5M12 17h.01" />
-      </>
-    ),
-    delay: (
-      <>
-        <circle cx="12" cy="12" r="8.5" />
-        <path d="M12 7v5l3 2" />
-      </>
-    ),
-    team: (
-      <>
-        <circle cx="12" cy="8" r="3" />
-        <path d="M5 20c0-3.2 2.8-5 7-5s7 1.8 7 5" />
-      </>
-    ),
+function KpiIcon({ type, icon }) {
+  const iconMap = {
+    projects: FolderKanban,
+    attention: TriangleAlert,
+    delay: ClockAlert,
+    team: Users,
   };
+
+  const Icon = iconMap[icon] || FolderKanban;
 
   return (
     <div className={`kpi-icon kpi-icon-${type}`}>
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        {icons[type]}
-      </svg>
+      <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
     </div>
   );
 }
@@ -82,16 +56,17 @@ function Dashboard() {
       <section className="kpi-grid">
         {kpis.map((kpi) => (
           <article className="kpi-card" key={kpi.label}>
-            <div className="kpi-card-top">
-              <KpiIcon type={kpi.type} />
-
-              <button className="kpi-menu" aria-label={`Opcje: ${kpi.label}`}>
-                •••
-              </button>
+            <div className="kpi-content">
+              <KpiIcon type={kpi.type} icon={kpi.icon} />
+              <div className="kpi-info">
+                <div className="kpi-value">{kpi.value}</div>
+                <div className="kpi-label">{kpi.label}</div>
+              </div>
             </div>
 
-            <div className="kpi-value">{kpi.value}</div>
-            <div className="kpi-label">{kpi.label}</div>
+            <button className="kpi-menu" aria-label={`Opcje: ${kpi.label}`}>
+              •••
+            </button>
           </article>
         ))}
       </section>
