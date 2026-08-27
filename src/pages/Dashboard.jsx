@@ -1,11 +1,11 @@
-import './Dashboard.css'
+import "./Dashboard.css";
 import {
-    kpis,
-    attentionProjects,
-    upcomingDeadlines,
-    teamLoad,
-    recentProjects,
-  } from '../data/dashboard'
+  kpis,
+  attentionProjects,
+  upcomingDeadlines,
+  teamLoad,
+  recentProjects,
+} from "../data/dashboard";
 
 function KpiIcon({ type }) {
   const icons = {
@@ -33,7 +33,7 @@ function KpiIcon({ type }) {
         <path d="M5 20c0-3.2 2.8-5 7-5s7 1.8 7 5" />
       </>
     ),
-  }
+  };
 
   return (
     <div className={`kpi-icon kpi-icon-${type}`}>
@@ -48,7 +48,7 @@ function KpiIcon({ type }) {
         {icons[type]}
       </svg>
     </div>
-  )
+  );
 }
 
 function Dashboard() {
@@ -96,212 +96,206 @@ function Dashboard() {
 
       <section className="dashboard-section-grid">
         <article className="dashboard-card attention-card">
-            <div className="section-header">
+          <div className="section-header">
             <div>
-                <h2>Wymaga uwagi</h2>
-                <p>Projekty wymagające reakcji</p>
+              <h2>Wymaga uwagi</h2>
+              <p>Projekty wymagające reakcji</p>
             </div>
 
             <button className="text-button">Zobacz wszystkie</button>
-            </div>
+          </div>
 
-            <div className="attention-list">
+          <div className="attention-list">
             {attentionProjects.map((project) => (
-                <div className="attention-item" key={project.name}>
+              <div className="attention-item" key={project.name}>
                 <div className={`attention-status ${project.type}`} />
 
                 <div className="attention-content">
-                    <div className="attention-project-name">
-                    {project.name}
-                    </div>
+                  <div className="attention-project-name">{project.name}</div>
 
-                    <div className="attention-issue">
-                    {project.issue}
-                    </div>
+                  <div className="attention-issue">{project.issue}</div>
                 </div>
 
-                <div className="attention-date">
-                    {project.date}
-                </div>
+                <div className="attention-date">{project.date}</div>
 
-                <button className="row-arrow" aria-label={`Otwórz ${project.name}`}>
-                    →
+                <button
+                  className="row-arrow"
+                  aria-label={`Otwórz ${project.name}`}
+                >
+                  →
                 </button>
-                </div>
+              </div>
             ))}
-            </div>
+          </div>
         </article>
 
         <article className="dashboard-card deadlines-card">
-            <div className="section-header">
+          <div className="section-header">
             <div>
-                <h2>Najbliższe terminy</h2>
-                <p>Nadchodzące ważne wydarzenia</p>
+              <h2>Najbliższe terminy</h2>
+              <p>Nadchodzące ważne wydarzenia</p>
             </div>
 
             <button className="text-button">Wszystkie</button>
-            </div>
+          </div>
 
-            <div className="deadline-list">
+          <div className="deadline-list">
             {upcomingDeadlines.map((deadline) => (
-                <div className="deadline-item" key={`${deadline.date}-${deadline.title}`}>
+              <div
+                className="deadline-item"
+                key={`${deadline.date}-${deadline.title}`}
+              >
                 <div className="deadline-date">
-                    <strong>{deadline.date}</strong>
-                    <span>{deadline.month}</span>
+                  <strong>{deadline.date}</strong>
+                  <span>{deadline.month}</span>
                 </div>
 
                 <div className="deadline-content">
-                    <strong>{deadline.title}</strong>
-                    <span>{deadline.project}</span>
+                  <strong>{deadline.title}</strong>
+                  <span>{deadline.project}</span>
                 </div>
 
-                <button className="row-arrow" aria-label={`Otwórz ${deadline.title}`}>
-                    →
+                <button
+                  className="row-arrow"
+                  aria-label={`Otwórz ${deadline.title}`}
+                >
+                  →
                 </button>
-                </div>
+              </div>
             ))}
-            </div>
+          </div>
         </article>
-        </section>
-    
-        <section className="dashboard-bottom-grid">
+      </section>
+
+      <section className="dashboard-bottom-grid">
         <article className="dashboard-card team-load-card">
-            <div className="section-header">
+          <div className="section-header">
             <div>
-                <h2>Obciążenie zespołu</h2>
-                <p>Aktualne wykorzystanie zespołu</p>
+              <h2>Obciążenie zespołu</h2>
+              <p>Aktualne wykorzystanie zespołu</p>
             </div>
 
             <button className="text-button">Szczegóły</button>
-            </div>
+          </div>
 
-            <div className="team-load-main">
+          <div className="team-load-main">
             <div className="load-circle">
-                <div className="load-circle-inner">
+              <div className="load-circle-inner">
                 <strong>76%</strong>
                 <span>średnie</span>
-                </div>
+              </div>
             </div>
 
             <div className="load-summary">
-                {teamLoad.map((item) => (
+              {teamLoad.map((item) => (
                 <div className="load-row" key={item.label}>
-                    <div className="load-row-label">
+                  <div className="load-row-label">
                     <span className={`load-dot ${item.type}`} />
                     <span>{item.label}</span>
-                    </div>
+                  </div>
 
-                    <div className="load-row-value">
+                  <div className="load-row-value">
                     <strong>{item.value}</strong>
                     <span>{item.percentage}%</span>
-                    </div>
+                  </div>
                 </div>
-                ))}
+              ))}
             </div>
-            </div>
+          </div>
 
-            <div className="team-load-footer">
+          <div className="team-load-footer">
             <span>8 członków zespołu</span>
-            <span className="load-warning">
-                1 osoba wymaga uwagi
-            </span>
-            </div>
+            <span className="load-warning">1 osoba wymaga uwagi</span>
+          </div>
         </article>
 
         <article className="dashboard-card projects-card">
-            <div className="section-header">
+          <div className="section-header">
             <div>
-                <h2>Ostatnie projekty</h2>
-                <p>Ostatnio aktualizowane projekty</p>
+              <h2>Ostatnie projekty</h2>
+              <p>Ostatnio aktualizowane projekty</p>
             </div>
 
             <button className="text-button">Wszystkie projekty</button>
-            </div>
+          </div>
 
-            <div className="projects-table-wrapper">
+          <div className="projects-table-wrapper">
             <table className="projects-table">
-                <thead>
+              <thead>
                 <tr>
-                    <th>Projekt / Klient</th>
-                    <th>Etap</th>
-                    <th>Postęp</th>
-                    <th>Termin</th>
-                    <th>Status</th>
-                    <th />
+                  <th>Projekt / Klient</th>
+                  <th>Etap</th>
+                  <th>Postęp</th>
+                  <th>Termin</th>
+                  <th>Status</th>
+                  <th />
                 </tr>
-                </thead>
+              </thead>
 
-                <tbody>
+              <tbody>
                 {recentProjects.map((project) => (
-                    <tr key={project.name}>
+                  <tr key={project.name}>
                     <td>
-                        <div className="project-cell">
+                      <div className="project-cell">
                         <div className="project-avatar">
-                            {project.name
-                            .split(' ')
+                          {project.name
+                            .split(" ")
                             .map((word) => word[0])
-                            .join('')
+                            .join("")
                             .slice(0, 2)}
                         </div>
 
                         <div>
-                            <strong>{project.name}</strong>
-                            <span>{project.client}</span>
+                          <strong>{project.name}</strong>
+                          <span>{project.client}</span>
                         </div>
-                        </div>
+                      </div>
                     </td>
 
                     <td>
-                        <span className="stage-text">
-                        {project.stage}
-                        </span>
+                      <span className="stage-text">{project.stage}</span>
                     </td>
 
                     <td>
-                        <div className="progress-cell">
+                      <div className="progress-cell">
                         <div className="progress-track">
-                            <div
+                          <div
                             className="progress-bar"
                             style={{ width: `${project.progress}%` }}
-                            />
+                          />
                         </div>
 
                         <span>{project.progress}%</span>
-                        </div>
+                      </div>
                     </td>
 
                     <td>
-                        <span className="deadline-text">
-                        {project.deadline}
-                        </span>
+                      <span className="deadline-text">{project.deadline}</span>
                     </td>
 
                     <td>
-                        <span
-                        className={`project-status ${project.statusType}`}
-                        >
+                      <span className={`project-status ${project.statusType}`}>
                         {project.status}
-                        </span>
+                      </span>
                     </td>
 
                     <td>
-                        <button
+                      <button
                         className="row-arrow"
                         aria-label={`Otwórz ${project.name}`}
-                        >
+                      >
                         →
-                        </button>
+                      </button>
                     </td>
-                    </tr>
+                  </tr>
                 ))}
-                </tbody>
+              </tbody>
             </table>
-            </div>
+          </div>
         </article>
-        </section>
-
+      </section>
     </div>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;

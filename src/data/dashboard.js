@@ -120,3 +120,11 @@ const recentProjects = [
     statusType: 'active',
 },
 ]
+
+export {
+  kpis,
+  attentionProjects,
+  upcomingDeadlines,
+  teamLoad,
+  recentProjects,
+}
