@@ -1,8 +1,8 @@
 import './Sidebar.css'
 
 const navigationItems = [
-  { label: 'Dashboard', icon: 'dashboard', active: true },
-  { label: 'Projekty', icon: 'projects' },
+  { label: 'Dashboard', icon: 'dashboard', view: 'dashboard' },
+  { label: 'Projekty', icon: 'projects', view: 'projects' },
   { label: 'Harmonogram', icon: 'schedule' },
   { label: 'Zespół', icon: 'team' },
   { label: 'Dokumenty', icon: 'documents' },
@@ -10,6 +10,18 @@ const navigationItems = [
   { label: 'Ustawienia', icon: 'settings' },
   { label: 'Pomoc', icon: 'help' },
 ]
+
+function getItemHref(item) {
+  if (item.view === 'dashboard') {
+    return '#/dashboard'
+  }
+
+  if (item.view === 'projects') {
+    return '#/projekty'
+  }
+
+  return '#'
+}
 
 function Icon({ name }) {
   const icons = {
@@ -90,7 +102,19 @@ function Icon({ name }) {
   )
 }
 
-function Sidebar() {
+function Sidebar({ activeView, onNavigate }) {
+  function handleItemClick(event, item) {
+    if (!item.view) {
+      event.preventDefault()
+      return
+    }
+
+    if (onNavigate) {
+      event.preventDefault()
+      onNavigate(item.view)
+    }
+  }
+
   return (
     <aside className="sidebar">
       <div className="sidebar-top">
@@ -106,10 +130,10 @@ function Sidebar() {
         <nav className="sidebar-nav">
           {navigationItems.map((item) => (
             <a
-              href="#"
-              className={`sidebar-nav-item ${item.active ? 'active' : ''}`}
+              href={getItemHref(item)}
+              className={`sidebar-nav-item ${activeView === item.view ? 'active' : ''}`}
               key={item.label}
-              onClick={(event) => event.preventDefault()}
+              onClick={(event) => handleItemClick(event, item)}
             >
               <Icon name={item.icon} />
               <span>{item.label}</span>
