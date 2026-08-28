@@ -3,7 +3,7 @@ import './Sidebar.css'
 const navigationItems = [
   { label: 'Dashboard', icon: 'dashboard', view: 'dashboard' },
   { label: 'Projekty', icon: 'projects', view: 'projects' },
-  { label: 'Harmonogram', icon: 'schedule' },
+  { label: 'Harmonogram', icon: 'schedule', view: 'schedule' },
   { label: 'Zespół', icon: 'team' },
   { label: 'Dokumenty', icon: 'documents' },
   { label: 'Klienci', icon: 'clients' },
@@ -18,6 +18,10 @@ function getItemHref(item) {
 
   if (item.view === 'projects') {
     return '#/projekty'
+  }
+
+  if (item.view === 'schedule') {
+    return '#/harmonogram'
   }
 
   return '#'

@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import Sidebar from './components/layout/Sidebar'
 import Dashboard from './pages/Dashboard'
 import Projects from './pages/Projects'
+import Schedule from './pages/Schedule'
 import './index.css'
 
 const views = {
   dashboard: 'dashboard',
   projects: 'projects',
+  schedule: 'schedule',
 }
 
 function getViewFromHash(hash) {
@@ -14,6 +16,10 @@ function getViewFromHash(hash) {
 
   if (normalizedHash.startsWith('#/projekty') || normalizedHash.startsWith('#/projects')) {
     return views.projects
+  }
+
+  if (normalizedHash.startsWith('#/harmonogram') || normalizedHash.startsWith('#/schedule')) {
+    return views.schedule
   }
 
   if (normalizedHash.startsWith('#/dashboard')) {
@@ -26,6 +32,10 @@ function getViewFromHash(hash) {
 function getHashForView(view) {
   if (view === views.projects) {
     return '#/projekty'
+  }
+
+  if (view === views.schedule) {
+    return '#/harmonogram'
   }
 
   return '#/dashboard'
@@ -67,6 +77,7 @@ function App() {
       <main className="main-content">
         {activeView === views.dashboard && <Dashboard />}
         {activeView === views.projects && <Projects />}
+        {activeView === views.schedule && <Schedule />}
       </main>
     </div>
   )

@@ -1,0 +1,443 @@
+const scheduleViewOptions = [
+  { id: 'project-stages', label: 'Etapy projektów' },
+  { id: 'milestones', label: 'Kamienie milowe' },
+]
+
+const scheduleScaleOptions = [
+  { id: 'month', label: 'Miesiąc' },
+  { id: 'week', label: 'Tydzień' },
+]
+
+const scheduleStatusFilters = [
+  { id: 'all', label: 'Wszystkie' },
+  { id: 'on-track', label: 'Zgodnie z planem' },
+  { id: 'attention', label: 'Wymaga uwagi' },
+  { id: 'delayed', label: 'Opóźnione' },
+  { id: 'completed', label: 'Zakończone' },
+]
+
+const scheduleSummaryCards = [
+  {
+    id: 'active-projects',
+    type: 'blue',
+    icon: 'projects',
+    label: 'Aktywnych projektów',
+  },
+  {
+    id: 'on-track-projects',
+    type: 'green',
+    icon: 'on-track',
+    label: 'Projektów zgodnie z planem',
+  },
+  {
+    id: 'delayed-projects',
+    type: 'orange',
+    icon: 'delayed',
+    label: 'Projektów z opóźnieniem',
+  },
+  {
+    id: 'attention-projects',
+    type: 'red',
+    icon: 'attention',
+    label: 'Wymaga uwagi',
+  },
+]
+
+const scheduleStagePlans = {
+  'villa-krakow': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-06-01', endDate: '2026-06-17', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-18', endDate: '2026-07-07', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-07-08',
+      endDate: '2026-09-09',
+      state: 'active',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-09-10',
+      endDate: '2026-10-05',
+      state: 'planned',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-10-06',
+      endDate: '2026-10-30',
+      state: 'planned',
+    },
+  ],
+  'house-gdansk': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-05-27', endDate: '2026-06-09', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-10', endDate: '2026-07-02', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-07-03',
+      endDate: '2026-08-30',
+      state: 'delayed',
+      note: '+8 dni',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-09-01',
+      endDate: '2026-09-22',
+      state: 'planned',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-09-23',
+      endDate: '2026-10-16',
+      state: 'planned',
+    },
+  ],
+  'office-warsaw': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-06-04', endDate: '2026-06-21', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-22', endDate: '2026-07-18', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-07-19',
+      endDate: '2026-09-02',
+      state: 'active',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-09-03',
+      endDate: '2026-10-01',
+      state: 'planned',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-10-02',
+      endDate: '2026-10-25',
+      state: 'planned',
+    },
+  ],
+  'dom-warszawa': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-06-02', endDate: '2026-06-14', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-15', endDate: '2026-07-08', state: 'active' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-07-09',
+      endDate: '2026-08-21',
+      state: 'planned',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-08-22',
+      endDate: '2026-09-20',
+      state: 'planned',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-09-21',
+      endDate: '2026-10-12',
+      state: 'planned',
+    },
+  ],
+  'apartamenty-wroclaw': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-06-10', endDate: '2026-06-27', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-28', endDate: '2026-07-19', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-07-20',
+      endDate: '2026-09-06',
+      state: 'active',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-09-07',
+      endDate: '2026-10-05',
+      state: 'planned',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-10-06',
+      endDate: '2026-10-31',
+      state: 'planned',
+    },
+  ],
+  'villa-sopot': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-06-01', endDate: '2026-06-11', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-12', endDate: '2026-06-29', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-06-30',
+      endDate: '2026-08-12',
+      state: 'done',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-08-13',
+      endDate: '2026-09-29',
+      state: 'active',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-09-30',
+      endDate: '2026-10-21',
+      state: 'planned',
+    },
+  ],
+  'dom-poznan': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-06-09', endDate: '2026-06-20', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-21', endDate: '2026-07-13', state: 'blocked' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-07-14',
+      endDate: '2026-08-24',
+      state: 'planned',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-08-25',
+      endDate: '2026-09-24',
+      state: 'planned',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-09-25',
+      endDate: '2026-10-20',
+      state: 'planned',
+    },
+  ],
+  'rezydencja-gdynia': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-05-31', endDate: '2026-06-10', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-11', endDate: '2026-06-30', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-07-01',
+      endDate: '2026-08-11',
+      state: 'done',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-08-12',
+      endDate: '2026-09-11',
+      state: 'done',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-09-12',
+      endDate: '2026-10-05',
+      state: 'active',
+    },
+  ],
+  'loft-lodz': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-05-31', endDate: '2026-06-11', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-12', endDate: '2026-07-04', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-07-05',
+      endDate: '2026-08-01',
+      state: 'done',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-08-02',
+      endDate: '2026-08-14',
+      state: 'done',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-08-15',
+      endDate: '2026-08-28',
+      state: 'done',
+    },
+  ],
+  'osiedle-katowice': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-06-03', endDate: '2026-06-21', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-22', endDate: '2026-07-10', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-07-11',
+      endDate: '2026-09-20',
+      state: 'delayed',
+      note: '+5 dni',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-09-21',
+      endDate: '2026-10-15',
+      state: 'planned',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-10-16',
+      endDate: '2026-11-07',
+      state: 'planned',
+    },
+  ],
+  'apartament-krakow': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-05-29', endDate: '2026-06-05', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-06', endDate: '2026-06-20', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-06-21',
+      endDate: '2026-07-17',
+      state: 'done',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-07-18',
+      endDate: '2026-08-02',
+      state: 'done',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-08-03',
+      endDate: '2026-08-13',
+      state: 'done',
+    },
+  ],
+  'biuro-szczecin': [
+    { id: 'analysis', label: 'Analiza', startDate: '2026-05-25', endDate: '2026-06-03', state: 'done' },
+    { id: 'concept', label: 'Koncepcja', startDate: '2026-06-04', endDate: '2026-06-19', state: 'done' },
+    {
+      id: 'construction',
+      label: 'Projekt budowlany',
+      startDate: '2026-06-20',
+      endDate: '2026-07-10',
+      state: 'done',
+    },
+    {
+      id: 'execution',
+      label: 'Projekt wykonawczy',
+      startDate: '2026-07-11',
+      endDate: '2026-07-24',
+      state: 'done',
+    },
+    {
+      id: 'supervision',
+      label: 'Nadzór autorski',
+      startDate: '2026-07-25',
+      endDate: '2026-08-08',
+      state: 'done',
+    },
+  ],
+}
+
+const scheduleAttentionItems = [
+  {
+    id: 'att-1',
+    type: 'danger',
+    projectId: 'house-gdansk',
+    title: 'Opóźnienie - 8 dni',
+    details: 'Oczekiwanie na akceptację klienta',
+  },
+  {
+    id: 'att-2',
+    type: 'warning',
+    projectId: 'dom-poznan',
+    title: 'Brak odpowiedzi klienta',
+    details: 'Brak odpowiedzi od 5 dni',
+  },
+  {
+    id: 'att-3',
+    type: 'warning',
+    projectId: 'osiedle-katowice',
+    title: 'Ryzyko kolizji terminów',
+    details: 'Wymagana decyzja projektanta prowadzącego',
+  },
+]
+
+const scheduleMilestones = [
+  {
+    id: 'mil-1',
+    type: 'stage-complete',
+    projectId: 'villa-krakow',
+    title: 'Zakończenie etapu',
+    stage: 'Projekt budowlany',
+    date: '2026-09-18',
+  },
+  {
+    id: 'mil-2',
+    type: 'client-acceptance',
+    projectId: 'house-gdansk',
+    title: 'Akceptacja klienta',
+    stage: 'Projekt budowlany',
+    date: '2026-08-20',
+  },
+  {
+    id: 'mil-3',
+    type: 'stage-start',
+    projectId: 'villa-sopot',
+    title: 'Rozpoczęcie etapu',
+    stage: 'Projekt wykonawczy',
+    date: '2026-09-22',
+  },
+  {
+    id: 'mil-4',
+    type: 'stage-complete',
+    projectId: 'dom-warszawa',
+    title: 'Oddanie etapu',
+    stage: 'Nadzór autorski',
+    date: '2026-10-05',
+  },
+  {
+    id: 'mil-5',
+    type: 'stage-start',
+    projectId: 'apartamenty-wroclaw',
+    title: 'Start etapu',
+    stage: 'Projekt wykonawczy',
+    date: '2026-09-07',
+  },
+  {
+    id: 'mil-6',
+    type: 'client-acceptance',
+    projectId: 'rezydencja-gdynia',
+    title: 'Akceptacja dokumentacji',
+    stage: 'Projekt wykonawczy',
+    date: '2026-09-10',
+  },
+]
+
+const scheduleLegend = [
+  { id: 'done', label: 'Ukończone', color: 'done' },
+  { id: 'active', label: 'W trakcie', color: 'active' },
+  { id: 'blocked', label: 'Oczekiwanie / blokada', color: 'blocked' },
+  { id: 'delayed', label: 'Opóźnione', color: 'delayed' },
+  { id: 'planned', label: 'Planowane', color: 'planned' },
+]
+
+export {
+  scheduleViewOptions,
+  scheduleScaleOptions,
+  scheduleStatusFilters,
+  scheduleSummaryCards,
+  scheduleStagePlans,
+  scheduleAttentionItems,
+  scheduleMilestones,
+  scheduleLegend,
+}
