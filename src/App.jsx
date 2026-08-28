@@ -3,12 +3,14 @@ import Sidebar from './components/layout/Sidebar'
 import Dashboard from './pages/Dashboard'
 import Projects from './pages/Projects'
 import Schedule from './pages/Schedule'
+import Team from './pages/Team'
 import './index.css'
 
 const views = {
   dashboard: 'dashboard',
   projects: 'projects',
   schedule: 'schedule',
+  team: 'team',
 }
 
 function getViewFromHash(hash) {
@@ -20,6 +22,10 @@ function getViewFromHash(hash) {
 
   if (normalizedHash.startsWith('#/harmonogram') || normalizedHash.startsWith('#/schedule')) {
     return views.schedule
+  }
+
+  if (normalizedHash.startsWith('#/zespol') || normalizedHash.startsWith('#/team')) {
+    return views.team
   }
 
   if (normalizedHash.startsWith('#/dashboard')) {
@@ -36,6 +42,10 @@ function getHashForView(view) {
 
   if (view === views.schedule) {
     return '#/harmonogram'
+  }
+
+  if (view === views.team) {
+    return '#/zespol'
   }
 
   return '#/dashboard'
@@ -78,6 +88,7 @@ function App() {
         {activeView === views.dashboard && <Dashboard />}
         {activeView === views.projects && <Projects />}
         {activeView === views.schedule && <Schedule />}
+        {activeView === views.team && <Team />}
       </main>
     </div>
   )

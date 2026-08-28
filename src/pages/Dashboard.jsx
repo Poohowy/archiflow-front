@@ -182,7 +182,7 @@ function Dashboard() {
 
           <div className="team-load-footer">
             <span>8 członków zespołu</span>
-            <span className="load-warning">1 osoba wymaga uwagi</span>
+            <span className="load-warning">3 osoby wymagają uwagi</span>
           </div>
         </article>
 

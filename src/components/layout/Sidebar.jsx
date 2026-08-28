@@ -4,7 +4,7 @@ const navigationItems = [
   { label: 'Dashboard', icon: 'dashboard', view: 'dashboard' },
   { label: 'Projekty', icon: 'projects', view: 'projects' },
   { label: 'Harmonogram', icon: 'schedule', view: 'schedule' },
-  { label: 'Zespół', icon: 'team' },
+  { label: 'Zespół', icon: 'team', view: 'team' },
   { label: 'Dokumenty', icon: 'documents' },
   { label: 'Klienci', icon: 'clients' },
   { label: 'Ustawienia', icon: 'settings' },
@@ -22,6 +22,10 @@ function getItemHref(item) {
 
   if (item.view === 'schedule') {
     return '#/harmonogram'
+  }
+
+  if (item.view === 'team') {
+    return '#/zespol'
   }
 
   return '#'

@@ -1,6 +1,6 @@
 const kpis = [
     {
-      value: '12',
+      value: '17',
       label: 'Aktywnych projektów',
       type: 'blue',
       icon: 'projects',

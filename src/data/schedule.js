@@ -31,13 +31,13 @@ const scheduleSummaryCards = [
   },
   {
     id: 'delayed-projects',
-    type: 'orange',
+    type: 'red',
     icon: 'delayed',
     label: 'Projektów z opóźnieniem',
   },
   {
     id: 'attention-projects',
-    type: 'red',
+    type: 'orange',
     icon: 'attention',
     label: 'Wymaga uwagi',
   },
