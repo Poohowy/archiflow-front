@@ -21,6 +21,15 @@ const teamById = teamDirectory.reduce((lookup, member) => {
   return lookup
 }, {})
 
+function buildClientId(clientName) {
+  return clientName
+    .toLocaleLowerCase('pl-PL')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 const projectEntries = [
   {
     id: 'villa-krakow',
@@ -266,6 +275,7 @@ const projectEntries = [
 
 const projects = projectEntries.map((project) => ({
   ...project,
+  clientId: buildClientId(project.client),
   owner: teamById[project.ownerId],
 }))
 
@@ -293,4 +303,4 @@ const projectTabFilters = [
   },
 ]
 
-export { projectTabFilters, projectSortOptions, projects, teamDirectory }
+export { buildClientId, projectTabFilters, projectSortOptions, projects, teamDirectory }

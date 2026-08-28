@@ -5,11 +5,14 @@ function ProjectsControls({
   searchQuery,
   activeTab,
   sortBy,
+  clientFilterOptions,
+  selectedClientId,
   responsibleFilterOptions,
   selectedResponsibleId,
   onSearchChange,
   onTabChange,
   onSortChange,
+  onClientChange,
   onResponsibleChange,
 }) {
   return (
@@ -43,6 +46,25 @@ function ProjectsControls({
         </div>
 
         <div className="projects-secondary-filters">
+          <label
+            className={`projects-client-filter ${selectedClientId !== 'all' ? 'active' : ''}`}
+            htmlFor="projects-client-filter-select"
+          >
+            <span>Klient:</span>
+            <select
+              id="projects-client-filter-select"
+              value={selectedClientId}
+              onChange={(event) => onClientChange(event.target.value)}
+              aria-label="Filtr klienta projektu"
+            >
+              {clientFilterOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <label
             className={`projects-owner-filter ${selectedResponsibleId !== 'all' ? 'active' : ''}`}
             htmlFor="projects-owner-filter-select"

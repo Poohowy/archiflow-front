@@ -7,8 +7,7 @@ const navigationItems = [
   { label: 'Projekty', icon: 'projects', view: 'projects' },
   { label: 'Harmonogram', icon: 'schedule', view: 'schedule' },
   { label: 'Zespół', icon: 'team', view: 'team' },
-  { label: 'Dokumenty', icon: 'documents' },
-  { label: 'Klienci', icon: 'clients' },
+  { label: 'Klienci', icon: 'clients', view: 'clients' },
   { label: 'Ustawienia', icon: 'settings', disabled: true },
   { label: 'Pomoc', icon: 'help', action: 'help' },
 ]
@@ -28,6 +27,10 @@ function getItemHref(item) {
 
   if (item.view === 'team') {
     return '#/zespol'
+  }
+
+  if (item.view === 'clients') {
+    return '#/klienci'
   }
 
   return '#'

@@ -287,39 +287,41 @@
 }
 
 .team-projects-cell {
+  min-width: 132px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 3px;
 }
 
-.team-projects-cell strong {
-  font-size: 13px;
-  font-weight: 620;
-  color: #253247;
+.team-projects-count-link {
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 660;
+  color: #1f4f84;
+  text-decoration: none;
 }
 
-.team-projects-cell span {
-  font-size: 11px;
-  color: #8a95a5;
-  white-space: nowrap;
+.team-projects-count-link:hover {
+  text-decoration: underline;
 }
 
 .team-projects-link {
+  color: #456e9d;
+  font-size: 11px;
+  white-space: nowrap;
   text-decoration: none;
-  color: inherit;
-  border-radius: 8px;
-  padding: 2px 5px;
-  margin: -2px -5px;
-  transition: background-color 0.15s ease;
 }
 
 .team-projects-link:hover {
-  background: #edf2f8;
+  text-decoration: underline;
 }
 
+.team-projects-count-link:focus-visible,
 .team-projects-link:focus-visible {
   outline: 2px solid #9fb8da;
   outline-offset: 1px;
+  border-radius: 4px;
 }
 
 .team-workload-cell {

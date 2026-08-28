@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import Projects from './pages/Projects'
 import Schedule from './pages/Schedule'
 import Team from './pages/Team'
+import Clients from './pages/Clients'
 import './index.css'
 
 const views = {
@@ -11,6 +12,7 @@ const views = {
   projects: 'projects',
   schedule: 'schedule',
   team: 'team',
+  clients: 'clients',
 }
 
 function getViewFromHash(hash) {
@@ -26,6 +28,10 @@ function getViewFromHash(hash) {
 
   if (normalizedHash.startsWith('#/zespol') || normalizedHash.startsWith('#/team')) {
     return views.team
+  }
+
+  if (normalizedHash.startsWith('#/klienci') || normalizedHash.startsWith('#/clients')) {
+    return views.clients
   }
 
   if (normalizedHash.startsWith('#/dashboard')) {
@@ -46,6 +52,10 @@ function getHashForView(view) {
 
   if (view === views.team) {
     return '#/zespol'
+  }
+
+  if (view === views.clients) {
+    return '#/klienci'
   }
 
   return '#/dashboard'
@@ -89,6 +99,7 @@ function App() {
         {activeView === views.projects && <Projects />}
         {activeView === views.schedule && <Schedule />}
         {activeView === views.team && <Team />}
+        {activeView === views.clients && <Clients />}
       </main>
     </div>
   )

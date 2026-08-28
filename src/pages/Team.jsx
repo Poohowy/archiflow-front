@@ -230,14 +230,22 @@ function Team() {
                   </td>
 
                   <td>
-                    <a
-                      className="team-projects-cell team-projects-link"
-                      href={buildProjectsViewHash(member.id)}
-                      aria-label={`Pokaż aktywne projekty prowadzone przez ${member.name}`}
-                    >
-                      <strong>{member.activeProjectsCount}</strong>
-                      <span>Zobacz projekty</span>
-                    </a>
+                    <div className="team-projects-cell">
+                      <a
+                        className="team-projects-count-link"
+                        href={buildProjectsViewHash(member.id)}
+                        aria-label={`Pokaż aktywne projekty prowadzone przez ${member.name}`}
+                      >
+                        {member.activeProjectsCount}
+                      </a>
+                      <a
+                        className="team-projects-link"
+                        href={buildProjectsViewHash(member.id)}
+                        aria-label={`Zobacz projekty prowadzone przez ${member.name}`}
+                      >
+                        Zobacz projekty
+                      </a>
+                    </div>
                   </td>
 
                   <td>

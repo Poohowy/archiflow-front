@@ -2,39 +2,53 @@ import { Bell, Plus } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import ProjectsControls from '../components/projects/ProjectsControls'
 import ProjectsTable from '../components/projects/ProjectsTable'
+import { clients } from '../data/clients'
 import { projects as mockProjects } from '../data/projects'
 import { teamMembers } from '../data/team'
 import './Projects.css'
 
 const defaultResponsibleFilterId = 'all'
+const defaultClientFilterId = 'all'
 const responsibleQueryParam = 'odpowiedzialny'
+const clientQueryParam = 'klient'
 const responsibleFilterOptions = [
   { id: defaultResponsibleFilterId, label: 'Wszyscy' },
   ...teamMembers.map((member) => ({ id: member.id, label: member.name })),
 ]
+const clientFilterOptions = [
+  { id: defaultClientFilterId, label: 'Wszyscy klienci' },
+  ...clients.map((client) => ({ id: client.id, label: client.name })),
+]
 const teamMemberIds = new Set(teamMembers.map((member) => member.id))
+const clientIds = new Set(clients.map((client) => client.id))
 
 function normalizeText(value) {
   return value.toLocaleLowerCase('pl-PL')
 }
 
-function resolveResponsibleFilterFromHash(hash) {
+function resolveFiltersFromHash(hash) {
   const queryIndex = hash.indexOf('?')
   if (queryIndex === -1) {
-    return defaultResponsibleFilterId
+    return {
+      responsibleId: defaultResponsibleFilterId,
+      clientId: defaultClientFilterId,
+    }
   }
 
   const searchParams = new URLSearchParams(hash.slice(queryIndex + 1))
   const selectedResponsibleId = searchParams.get(responsibleQueryParam)
+  const selectedClientId = searchParams.get(clientQueryParam)
 
-  if (!selectedResponsibleId || !teamMemberIds.has(selectedResponsibleId)) {
-    return defaultResponsibleFilterId
+  return {
+    responsibleId:
+      selectedResponsibleId && teamMemberIds.has(selectedResponsibleId)
+        ? selectedResponsibleId
+        : defaultResponsibleFilterId,
+    clientId: selectedClientId && clientIds.has(selectedClientId) ? selectedClientId : defaultClientFilterId,
   }
-
-  return selectedResponsibleId
 }
 
-function buildHashWithResponsibleFilter(hash, responsibleId) {
+function buildHashWithFilters(hash, responsibleId, clientId) {
   const [hashPath, hashQuery = ''] = hash.split('?')
   const searchParams = new URLSearchParams(hashQuery)
 
@@ -42,6 +56,12 @@ function buildHashWithResponsibleFilter(hash, responsibleId) {
     searchParams.delete(responsibleQueryParam)
   } else {
     searchParams.set(responsibleQueryParam, responsibleId)
+  }
+
+  if (clientId === defaultClientFilterId) {
+    searchParams.delete(clientQueryParam)
+  } else {
+    searchParams.set(clientQueryParam, clientId)
   }
 
   const nextQuery = searchParams.toString()
@@ -100,25 +120,45 @@ function Projects() {
   const [activeTab, setActiveTab] = useState('all')
   const [sortBy, setSortBy] = useState('updatedAt-desc')
   const [selectedResponsibleId, setSelectedResponsibleId] = useState(() =>
-    resolveResponsibleFilterFromHash(window.location.hash),
+    resolveFiltersFromHash(window.location.hash).responsibleId,
+  )
+  const [selectedClientId, setSelectedClientId] = useState(() =>
+    resolveFiltersFromHash(window.location.hash).clientId,
   )
 
   useEffect(() => {
     const handleHashChange = () => {
-      setSelectedResponsibleId(resolveResponsibleFilterFromHash(window.location.hash))
+      const resolvedFilters = resolveFiltersFromHash(window.location.hash)
+      setSelectedResponsibleId(resolvedFilters.responsibleId)
+      setSelectedClientId(resolvedFilters.clientId)
     }
 
     window.addEventListener('hashchange', handleHashChange)
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
 
-  function handleResponsibleFilterChange(nextResponsibleId) {
-    setSelectedResponsibleId(nextResponsibleId)
+  function syncHashFilters(nextResponsibleId, nextClientId) {
+    const nextHash = buildHashWithFilters(window.location.hash, nextResponsibleId, nextClientId)
 
-    const nextHash = buildHashWithResponsibleFilter(window.location.hash, nextResponsibleId)
     if (window.location.hash !== nextHash) {
       window.location.hash = nextHash
     }
+  }
+
+  function handleResponsibleFilterChange(nextResponsibleId) {
+    setSelectedResponsibleId(nextResponsibleId)
+    syncHashFilters(nextResponsibleId, selectedClientId)
+  }
+
+  function handleClientFilterChange(nextClientId) {
+    setSelectedClientId(nextClientId)
+    syncHashFilters(selectedResponsibleId, nextClientId)
+  }
+
+  function handleClearAppliedFilters() {
+    setSelectedResponsibleId(defaultResponsibleFilterId)
+    setSelectedClientId(defaultClientFilterId)
+    syncHashFilters(defaultResponsibleFilterId, defaultClientFilterId)
   }
 
   const selectedResponsible = useMemo(() => {
@@ -129,6 +169,14 @@ function Projects() {
     return teamMembers.find((member) => member.id === selectedResponsibleId) || null
   }, [selectedResponsibleId])
 
+  const selectedClient = useMemo(() => {
+    if (selectedClientId === defaultClientFilterId) {
+      return null
+    }
+
+    return clients.find((client) => client.id === selectedClientId) || null
+  }, [selectedClientId])
+
   const visibleProjects = useMemo(() => {
     const normalizedSearch = normalizeText(searchQuery.trim())
 
@@ -136,16 +184,17 @@ function Projects() {
       const tabMatch = filterByTab(project, activeTab)
       const responsibleMatch =
         selectedResponsibleId === defaultResponsibleFilterId || project.ownerId === selectedResponsibleId
+      const clientMatch = selectedClientId === defaultClientFilterId || project.clientId === selectedClientId
 
       const textMatch =
         normalizeText(project.name).includes(normalizedSearch) ||
         normalizeText(project.client).includes(normalizedSearch)
 
-      return tabMatch && responsibleMatch && textMatch
+      return tabMatch && responsibleMatch && clientMatch && textMatch
     })
 
     return sortProjects(filteredProjects, sortBy)
-  }, [activeTab, searchQuery, selectedResponsibleId, sortBy])
+  }, [activeTab, searchQuery, selectedResponsibleId, selectedClientId, sortBy])
 
   return (
     <div className="projects-page">
@@ -171,21 +220,34 @@ function Projects() {
         searchQuery={searchQuery}
         activeTab={activeTab}
         sortBy={sortBy}
+        clientFilterOptions={clientFilterOptions}
+        selectedClientId={selectedClientId}
         responsibleFilterOptions={responsibleFilterOptions}
         selectedResponsibleId={selectedResponsibleId}
         onSearchChange={setSearchQuery}
         onTabChange={setActiveTab}
         onSortChange={setSortBy}
+        onClientChange={handleClientFilterChange}
         onResponsibleChange={handleResponsibleFilterChange}
       />
 
-      {selectedResponsible && (
-        <div className="projects-active-responsible-filter" role="status">
+      {(selectedResponsible || selectedClient) && (
+        <div className="projects-active-filters" role="status">
           <span>
-            Wyświetlasz projekty osoby odpowiedzialnej: <strong>{selectedResponsible.name}</strong>
+            {selectedClient && (
+              <>
+                Wyświetlasz projekty klienta: <strong>{selectedClient.name}</strong>
+              </>
+            )}
+            {selectedClient && selectedResponsible && ' · '}
+            {selectedResponsible && (
+              <>
+                Odpowiedzialny: <strong>{selectedResponsible.name}</strong>
+              </>
+            )}
           </span>
-          <button type="button" onClick={() => handleResponsibleFilterChange(defaultResponsibleFilterId)}>
-            Wyczyść filtr
+          <button type="button" onClick={handleClearAppliedFilters}>
+            Wyczyść filtry
           </button>
         </div>
       )}
