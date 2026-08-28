@@ -1,12 +1,51 @@
 import { Bell, Plus } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ProjectsControls from '../components/projects/ProjectsControls'
 import ProjectsTable from '../components/projects/ProjectsTable'
 import { projects as mockProjects } from '../data/projects'
+import { teamMembers } from '../data/team'
 import './Projects.css'
+
+const defaultResponsibleFilterId = 'all'
+const responsibleQueryParam = 'odpowiedzialny'
+const responsibleFilterOptions = [
+  { id: defaultResponsibleFilterId, label: 'Wszyscy' },
+  ...teamMembers.map((member) => ({ id: member.id, label: member.name })),
+]
+const teamMemberIds = new Set(teamMembers.map((member) => member.id))
 
 function normalizeText(value) {
   return value.toLocaleLowerCase('pl-PL')
+}
+
+function resolveResponsibleFilterFromHash(hash) {
+  const queryIndex = hash.indexOf('?')
+  if (queryIndex === -1) {
+    return defaultResponsibleFilterId
+  }
+
+  const searchParams = new URLSearchParams(hash.slice(queryIndex + 1))
+  const selectedResponsibleId = searchParams.get(responsibleQueryParam)
+
+  if (!selectedResponsibleId || !teamMemberIds.has(selectedResponsibleId)) {
+    return defaultResponsibleFilterId
+  }
+
+  return selectedResponsibleId
+}
+
+function buildHashWithResponsibleFilter(hash, responsibleId) {
+  const [hashPath, hashQuery = ''] = hash.split('?')
+  const searchParams = new URLSearchParams(hashQuery)
+
+  if (responsibleId === defaultResponsibleFilterId) {
+    searchParams.delete(responsibleQueryParam)
+  } else {
+    searchParams.set(responsibleQueryParam, responsibleId)
+  }
+
+  const nextQuery = searchParams.toString()
+  return nextQuery ? `${hashPath}?${nextQuery}` : hashPath
 }
 
 function parseDateValue(date) {
@@ -60,22 +99,53 @@ function Projects() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState('all')
   const [sortBy, setSortBy] = useState('updatedAt-desc')
+  const [selectedResponsibleId, setSelectedResponsibleId] = useState(() =>
+    resolveResponsibleFilterFromHash(window.location.hash),
+  )
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setSelectedResponsibleId(resolveResponsibleFilterFromHash(window.location.hash))
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  function handleResponsibleFilterChange(nextResponsibleId) {
+    setSelectedResponsibleId(nextResponsibleId)
+
+    const nextHash = buildHashWithResponsibleFilter(window.location.hash, nextResponsibleId)
+    if (window.location.hash !== nextHash) {
+      window.location.hash = nextHash
+    }
+  }
+
+  const selectedResponsible = useMemo(() => {
+    if (selectedResponsibleId === defaultResponsibleFilterId) {
+      return null
+    }
+
+    return teamMembers.find((member) => member.id === selectedResponsibleId) || null
+  }, [selectedResponsibleId])
 
   const visibleProjects = useMemo(() => {
     const normalizedSearch = normalizeText(searchQuery.trim())
 
     const filteredProjects = mockProjects.filter((project) => {
       const tabMatch = filterByTab(project, activeTab)
+      const responsibleMatch =
+        selectedResponsibleId === defaultResponsibleFilterId || project.ownerId === selectedResponsibleId
 
       const textMatch =
         normalizeText(project.name).includes(normalizedSearch) ||
         normalizeText(project.client).includes(normalizedSearch)
 
-      return tabMatch && textMatch
+      return tabMatch && responsibleMatch && textMatch
     })
 
     return sortProjects(filteredProjects, sortBy)
-  }, [activeTab, searchQuery, sortBy])
+  }, [activeTab, searchQuery, selectedResponsibleId, sortBy])
 
   return (
     <div className="projects-page">
@@ -101,10 +171,24 @@ function Projects() {
         searchQuery={searchQuery}
         activeTab={activeTab}
         sortBy={sortBy}
+        responsibleFilterOptions={responsibleFilterOptions}
+        selectedResponsibleId={selectedResponsibleId}
         onSearchChange={setSearchQuery}
         onTabChange={setActiveTab}
         onSortChange={setSortBy}
+        onResponsibleChange={handleResponsibleFilterChange}
       />
+
+      {selectedResponsible && (
+        <div className="projects-active-responsible-filter" role="status">
+          <span>
+            Wyświetlasz projekty osoby odpowiedzialnej: <strong>{selectedResponsible.name}</strong>
+          </span>
+          <button type="button" onClick={() => handleResponsibleFilterChange(defaultResponsibleFilterId)}>
+            Wyczyść filtr
+          </button>
+        </div>
+      )}
 
       <section className="projects-table-card">
         <ProjectsTable

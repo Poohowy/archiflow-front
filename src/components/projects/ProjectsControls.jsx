@@ -5,9 +5,12 @@ function ProjectsControls({
   searchQuery,
   activeTab,
   sortBy,
+  responsibleFilterOptions,
+  selectedResponsibleId,
   onSearchChange,
   onTabChange,
   onSortChange,
+  onResponsibleChange,
 }) {
   return (
     <div className="projects-controls">
@@ -39,20 +42,41 @@ function ProjectsControls({
           ))}
         </div>
 
-        <div className="projects-sort">
-          <ArrowUpDown size={14} aria-hidden="true" />
-          <label htmlFor="projects-sort-select">Sortuj:</label>
-          <select
-            id="projects-sort-select"
-            value={sortBy}
-            onChange={(event) => onSortChange(event.target.value)}
+        <div className="projects-secondary-filters">
+          <label
+            className={`projects-owner-filter ${selectedResponsibleId !== 'all' ? 'active' : ''}`}
+            htmlFor="projects-owner-filter-select"
           >
-            {projectSortOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            <span>Odpowiedzialny:</span>
+            <select
+              id="projects-owner-filter-select"
+              value={selectedResponsibleId}
+              onChange={(event) => onResponsibleChange(event.target.value)}
+              aria-label="Filtr odpowiedzialnego projektu"
+            >
+              {responsibleFilterOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className="projects-sort">
+            <ArrowUpDown size={14} aria-hidden="true" />
+            <label htmlFor="projects-sort-select">Sortuj:</label>
+            <select
+              id="projects-sort-select"
+              value={sortBy}
+              onChange={(event) => onSortChange(event.target.value)}
+            >
+              {projectSortOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
     </div>

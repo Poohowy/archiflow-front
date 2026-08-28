@@ -1,0 +1,158 @@
+.help-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+
+  background: rgba(11, 29, 58, 0.42);
+  animation: help-modal-fade-in 0.16s ease;
+}
+
+.help-modal {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  padding: 28px 28px 26px;
+
+  background: #ffffff;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(20, 35, 60, 0.16);
+
+  text-align: center;
+  animation: help-modal-scale-in 0.18s ease;
+}
+
+.help-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e1e6ee;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #536176;
+
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.help-modal-close:hover {
+  background: #f8fafc;
+}
+
+.help-modal-close:focus-visible,
+.help-modal-email:focus-visible,
+.help-modal-cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(36, 93, 155, 0.18);
+}
+
+.help-modal-brand {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 16px;
+  margin: 0 0 18px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.help-modal-logo {
+  display: block;
+  width: 164px;
+  height: auto;
+}
+
+.help-modal h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -0.4px;
+  color: #172033;
+}
+
+.help-modal p {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #6f7b8f;
+}
+
+.help-modal-email {
+  display: inline-block;
+  margin-top: 16px;
+
+  font-size: 13px;
+  font-weight: 550;
+  color: #2866a8;
+  text-decoration: none;
+}
+
+.help-modal-email:hover {
+  color: #174e89;
+}
+
+.help-modal-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 100%;
+  height: 42px;
+  margin-top: 18px;
+
+  border-radius: 8px;
+  background: #1d4f91;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 560;
+  text-decoration: none;
+
+  transition: background-color 0.15s ease;
+}
+
+.help-modal-cta:hover {
+  background: #17447d;
+}
+
+@keyframes help-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes help-modal-scale-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .help-modal-overlay,
+  .help-modal {
+    animation: none;
+  }
+}

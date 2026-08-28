@@ -18,12 +18,8 @@ function normalizeText(value) {
   return value.toLocaleLowerCase('pl-PL')
 }
 
-function formatProjectCountLabel(activeProjectsCount) {
-  if (activeProjectsCount === 1) {
-    return '1 aktywny projekt'
-  }
-
-  return `${activeProjectsCount} aktywne projekty`
+function buildProjectsViewHash(memberId) {
+  return `#/projekty?odpowiedzialny=${encodeURIComponent(memberId)}`
 }
 
 function matchesLoadFilter(member, selectedFilter) {
@@ -234,10 +230,14 @@ function Team() {
                   </td>
 
                   <td>
-                    <div className="team-projects-cell">
+                    <a
+                      className="team-projects-cell team-projects-link"
+                      href={buildProjectsViewHash(member.id)}
+                      aria-label={`Pokaż aktywne projekty prowadzone przez ${member.name}`}
+                    >
                       <strong>{member.activeProjectsCount}</strong>
-                      <span>{formatProjectCountLabel(member.activeProjectsCount)}</span>
-                    </div>
+                      <span>Zobacz projekty</span>
+                    </a>
                   </td>
 
                   <td>

@@ -1,3 +1,5 @@
+import { useCallback, useState } from 'react'
+import HelpModal from '../help/HelpModal'
 import './Sidebar.css'
 
 const navigationItems = [
@@ -7,8 +9,8 @@ const navigationItems = [
   { label: 'Zespół', icon: 'team', view: 'team' },
   { label: 'Dokumenty', icon: 'documents' },
   { label: 'Klienci', icon: 'clients' },
-  { label: 'Ustawienia', icon: 'settings' },
-  { label: 'Pomoc', icon: 'help' },
+  { label: 'Ustawienia', icon: 'settings', disabled: true },
+  { label: 'Pomoc', icon: 'help', action: 'help' },
 ]
 
 function getItemHref(item) {
@@ -111,7 +113,23 @@ function Icon({ name }) {
 }
 
 function Sidebar({ activeView, onNavigate }) {
+  const [isHelpOpen, setIsHelpOpen] = useState(false)
+  const handleCloseHelp = useCallback(() => {
+    setIsHelpOpen(false)
+  }, [])
+
   function handleItemClick(event, item) {
+    if (item.disabled) {
+      event.preventDefault()
+      return
+    }
+
+    if (item.action === 'help') {
+      event.preventDefault()
+      setIsHelpOpen(true)
+      return
+    }
+
     if (!item.view) {
       event.preventDefault()
       return
@@ -124,54 +142,67 @@ function Sidebar({ activeView, onNavigate }) {
   }
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-top">
-        <div className="brand">
-          <div className="brand-mark">
-            <span />
-            <span />
+    <>
+      <aside className="sidebar">
+        <div className="sidebar-top">
+          <div className="brand">
+            <div className="brand-mark">
+              <span />
+              <span />
+            </div>
+
+            <span className="brand-name">ArchiFlow</span>
           </div>
 
-          <span className="brand-name">ArchiFlow</span>
+          <nav className="sidebar-nav">
+            {navigationItems.map((item) => {
+              const isDisabled = item.disabled
+
+              return (
+                <a
+                  href={getItemHref(item)}
+                  className={`sidebar-nav-item ${activeView === item.view ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`}
+                  key={item.label}
+                  onClick={(event) => handleItemClick(event, item)}
+                  aria-disabled={isDisabled}
+                  aria-haspopup={item.action === 'help' ? 'dialog' : undefined}
+                  aria-expanded={item.action === 'help' ? isHelpOpen : undefined}
+                  tabIndex={isDisabled ? -1 : undefined}
+                  title={isDisabled ? 'Wkrótce' : undefined}
+                >
+                  <Icon name={item.icon} />
+                  <span>{item.label}</span>
+                </a>
+              )
+            })}
+          </nav>
         </div>
 
-        <nav className="sidebar-nav">
-          {navigationItems.map((item) => (
-            <a
-              href={getItemHref(item)}
-              className={`sidebar-nav-item ${activeView === item.view ? 'active' : ''}`}
-              key={item.label}
-              onClick={(event) => handleItemClick(event, item)}
-            >
-              <Icon name={item.icon} />
-              <span>{item.label}</span>
-            </a>
-          ))}
-        </nav>
-      </div>
+        <div className="sidebar-bottom">
+          <div className="user-profile">
+            <div className="user-avatar">AK</div>
 
-      <div className="sidebar-bottom">
-        <div className="user-profile">
-          <div className="user-avatar">AK</div>
+            <div className="user-info">
+              <span className="user-name">Anna Kowalska</span>
+              <span className="user-role">Właściciel</span>
+            </div>
 
-          <div className="user-info">
-            <span className="user-name">Anna Kowalska</span>
-            <span className="user-role">Właściciel</span>
+            <span className="profile-arrow">›</span>
           </div>
 
-          <span className="profile-arrow">›</span>
+          <a
+            href="#"
+            className="logout-button"
+            onClick={(event) => event.preventDefault()}
+          >
+            <Icon name="logout" />
+            <span>Wyloguj się</span>
+          </a>
         </div>
+      </aside>
 
-        <a
-          href="#"
-          className="logout-button"
-          onClick={(event) => event.preventDefault()}
-        >
-          <Icon name="logout" />
-          <span>Wyloguj się</span>
-        </a>
-      </div>
-    </aside>
+      {isHelpOpen && <HelpModal onClose={handleCloseHelp} />}
+    </>
   )
 }
 

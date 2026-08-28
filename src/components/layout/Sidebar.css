@@ -116,6 +116,17 @@
     background: #1d4f91;
     color: #ffffff;
   }
+
+  .sidebar-nav-item.disabled {
+    color: #93a1b8;
+    opacity: 0.72;
+    cursor: not-allowed;
+  }
+
+  .sidebar-nav-item.disabled:hover {
+    background: transparent;
+    color: #93a1b8;
+  }
   
   .sidebar-icon {
     width: 19px;

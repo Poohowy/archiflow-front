@@ -304,6 +304,24 @@
   white-space: nowrap;
 }
 
+.team-projects-link {
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+  padding: 2px 5px;
+  margin: -2px -5px;
+  transition: background-color 0.15s ease;
+}
+
+.team-projects-link:hover {
+  background: #edf2f8;
+}
+
+.team-projects-link:focus-visible {
+  outline: 2px solid #9fb8da;
+  outline-offset: 1px;
+}
+
 .team-workload-cell {
   min-width: 140px;
   display: flex;
