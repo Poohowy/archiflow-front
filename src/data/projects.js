@@ -35,7 +35,7 @@ const projectEntries = [
     id: 'villa-krakow',
     name: 'Villa Kraków',
     client: 'ABC Development',
-    ownerId: 'tomasz-mazur',
+    ownerId: 'katarzyna-lewandowska',
     stage: 'Projekt budowlany',
     progress: 72,
     deadline: '18.09.2026',

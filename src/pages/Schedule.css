@@ -162,6 +162,31 @@
   color: #36445b;
 }
 
+.schedule-project-context {
+  min-height: 36px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d8e4f4;
+  border-radius: 8px;
+  background: #f4f8fe;
+  color: #416084;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.schedule-project-context a {
+  color: #215992;
+  font-weight: 560;
+  text-decoration: none;
+}
+
+.schedule-project-context a:hover {
+  color: #1b4c7d;
+  text-decoration: underline;
+}
+
 .schedule-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

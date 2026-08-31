@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import Sidebar from './components/layout/Sidebar'
 import Dashboard from './pages/Dashboard'
 import Projects from './pages/Projects'
+import ProjectDetails from './pages/ProjectDetails'
+import StageDetails from './pages/StageDetails'
 import Schedule from './pages/Schedule'
 import Team from './pages/Team'
 import Clients from './pages/Clients'
@@ -15,30 +17,60 @@ const views = {
   clients: 'clients',
 }
 
-function getViewFromHash(hash) {
-  const normalizedHash = hash.toLowerCase()
+function getHashPath(hash) {
+  return hash.split('?')[0].toLowerCase()
+}
 
-  if (normalizedHash.startsWith('#/projekty') || normalizedHash.startsWith('#/projects')) {
-    return views.projects
+function decodeHashSegment(value) {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
+function getRouteFromHash(hash) {
+  const hashPath = getHashPath(hash)
+  const stageDetailsMatch = hashPath.match(/^#\/(?:projekty|projects)\/([^/?#]+)\/(?:etapy|stages)\/([^/?#]+)/)
+  const projectDetailsMatch = hashPath.match(/^#\/(?:projekty|projects)\/([^/?#]+)/)
+
+  if (stageDetailsMatch) {
+    return {
+      view: views.projects,
+      projectId: decodeHashSegment(stageDetailsMatch[1]),
+      stageId: decodeHashSegment(stageDetailsMatch[2]),
+    }
   }
 
-  if (normalizedHash.startsWith('#/harmonogram') || normalizedHash.startsWith('#/schedule')) {
-    return views.schedule
+  if (projectDetailsMatch) {
+    return {
+      view: views.projects,
+      projectId: decodeHashSegment(projectDetailsMatch[1]),
+      stageId: null,
+    }
   }
 
-  if (normalizedHash.startsWith('#/zespol') || normalizedHash.startsWith('#/team')) {
-    return views.team
+  if (hashPath.startsWith('#/projekty') || hashPath.startsWith('#/projects')) {
+    return { view: views.projects, projectId: null, stageId: null }
   }
 
-  if (normalizedHash.startsWith('#/klienci') || normalizedHash.startsWith('#/clients')) {
-    return views.clients
+  if (hashPath.startsWith('#/harmonogram') || hashPath.startsWith('#/schedule')) {
+    return { view: views.schedule, projectId: null, stageId: null }
   }
 
-  if (normalizedHash.startsWith('#/dashboard')) {
-    return views.dashboard
+  if (hashPath.startsWith('#/zespol') || hashPath.startsWith('#/team')) {
+    return { view: views.team, projectId: null, stageId: null }
   }
 
-  return views.dashboard
+  if (hashPath.startsWith('#/klienci') || hashPath.startsWith('#/clients')) {
+    return { view: views.clients, projectId: null, stageId: null }
+  }
+
+  if (hashPath.startsWith('#/dashboard')) {
+    return { view: views.dashboard, projectId: null, stageId: null }
+  }
+
+  return { view: views.dashboard, projectId: null, stageId: null }
 }
 
 function getHashForView(view) {
@@ -62,11 +94,11 @@ function getHashForView(view) {
 }
 
 function App() {
-  const [activeView, setActiveView] = useState(() => getViewFromHash(window.location.hash))
+  const [route, setRoute] = useState(() => getRouteFromHash(window.location.hash))
 
   useEffect(() => {
     const handleHashChange = () => {
-      setActiveView(getViewFromHash(window.location.hash))
+      setRoute(getRouteFromHash(window.location.hash))
     }
 
     window.addEventListener('hashchange', handleHashChange)
@@ -87,19 +119,26 @@ function App() {
       return
     }
 
-    setActiveView(view)
+    setRoute({ view, projectId: null, stageId: null })
   }
 
   return (
     <div className="app">
-      <Sidebar activeView={activeView} onNavigate={handleNavigate} />
+      <Sidebar activeView={route.view} onNavigate={handleNavigate} />
 
       <main className="main-content">
-        {activeView === views.dashboard && <Dashboard />}
-        {activeView === views.projects && <Projects />}
-        {activeView === views.schedule && <Schedule />}
-        {activeView === views.team && <Team />}
-        {activeView === views.clients && <Clients />}
+        {route.view === views.dashboard && <Dashboard />}
+        {route.view === views.projects &&
+          (route.projectId && route.stageId ? (
+            <StageDetails projectId={route.projectId} stageId={route.stageId} />
+          ) : route.projectId ? (
+            <ProjectDetails projectId={route.projectId} />
+          ) : (
+            <Projects />
+          ))}
+        {route.view === views.schedule && <Schedule />}
+        {route.view === views.team && <Team />}
+        {route.view === views.clients && <Clients />}
       </main>
     </div>
   )

@@ -42,6 +42,7 @@ const milestoneIconMap = {
 
 const monthYearFormatter = new Intl.DateTimeFormat('pl-PL', { month: 'long', year: 'numeric' })
 const shortWeekdayFormatter = new Intl.DateTimeFormat('pl-PL', { weekday: 'short' })
+const scheduleProjectIds = new Set(projects.map((project) => project.id))
 
 function capitalize(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
@@ -89,6 +90,24 @@ function parseIsoDate(value) {
 function parseProjectDate(value) {
   const [day, month, year] = value.split('.').map(Number)
   return new Date(year, month - 1, day)
+}
+
+function parseProjectFilterFromHash(hash) {
+  const queryIndex = hash.indexOf('?')
+
+  if (queryIndex === -1) {
+    return ''
+  }
+
+  const searchParams = new URLSearchParams(hash.slice(queryIndex + 1))
+  const encodedProjectId = searchParams.get('projekt') || searchParams.get('project')
+
+  if (!encodedProjectId) {
+    return ''
+  }
+
+  const projectId = decodeURIComponent(encodedProjectId)
+  return scheduleProjectIds.has(projectId) ? projectId : ''
 }
 
 function toDateKey(date) {
@@ -295,6 +314,9 @@ function Schedule() {
   const [selectedView, setSelectedView] = useState(scheduleViewOptions[0].id)
   const [selectedScale, setSelectedScale] = useState(scheduleScaleOptions[0].id)
   const [selectedStatusFilter, setSelectedStatusFilter] = useState(scheduleStatusFilters[0].id)
+  const [selectedProjectId, setSelectedProjectId] = useState(() =>
+    parseProjectFilterFromHash(window.location.hash),
+  )
   const [currentPage, setCurrentPage] = useState(1)
   const [rangeAnchorDate, setRangeAnchorDate] = useState(INITIAL_ANCHOR_DATE)
   const todayDate = startOfDay(new Date())
@@ -322,6 +344,7 @@ function Schedule() {
     })
     return projectMap
   }, [scheduleProjects])
+  const selectedProject = selectedProjectId ? projectsById.get(selectedProjectId) || null : null
 
   const timeline = useMemo(() => {
     if (selectedScale === 'week') {
@@ -333,13 +356,16 @@ function Schedule() {
   const isTodayInRange = Boolean(timeline.todayPosition)
 
   const filteredProjects = useMemo(() => {
-    return scheduleProjects.filter((project) =>
-      matchesStatusFilter(
+    return scheduleProjects.filter((project) => {
+      const statusMatch = matchesStatusFilter(
         { statusType: project.scheduleStatusType },
         selectedStatusFilter,
-      ),
-    )
-  }, [scheduleProjects, selectedStatusFilter])
+      )
+      const projectMatch = !selectedProjectId || project.id === selectedProjectId
+
+      return statusMatch && projectMatch
+    })
+  }, [scheduleProjects, selectedProjectId, selectedStatusFilter])
 
   const pageCount = Math.max(1, Math.ceil(filteredProjects.length / PAGE_SIZE))
   const safeCurrentPage = Math.min(currentPage, pageCount)
@@ -399,14 +425,17 @@ function Schedule() {
   }, [milestoneEntries])
 
   const summaryValues = useMemo(() => {
-    const activeProjects = scheduleProjects.filter((project) => project.statusType !== 'completed').length
-    const onTrackProjects = scheduleProjects.filter(
+    const sourceProjects = selectedProjectId
+      ? scheduleProjects.filter((project) => project.id === selectedProjectId)
+      : scheduleProjects
+    const activeProjects = sourceProjects.filter((project) => project.statusType !== 'completed').length
+    const onTrackProjects = sourceProjects.filter(
       (project) => project.scheduleStatusType === 'on-track',
     ).length
-    const delayedProjects = scheduleProjects.filter(
+    const delayedProjects = sourceProjects.filter(
       (project) => project.scheduleStatusType === 'delayed',
     ).length
-    const attentionProjects = scheduleProjects.filter(
+    const attentionProjects = sourceProjects.filter(
       (project) => project.scheduleStatusType === 'attention',
     ).length
 
@@ -416,7 +445,7 @@ function Schedule() {
       'delayed-projects': delayedProjects,
       'attention-projects': attentionProjects,
     }
-  }, [scheduleProjects])
+  }, [scheduleProjects, selectedProjectId])
 
   const summaryCards = useMemo(() => {
     return scheduleSummaryCards.map((card) => ({
@@ -427,6 +456,7 @@ function Schedule() {
 
   const attentionItems = useMemo(() => {
     return scheduleAttentionItems
+      .filter((item) => !selectedProjectId || item.projectId === selectedProjectId)
       .map((item) => {
         const project = projectsById.get(item.projectId)
 
@@ -440,10 +470,13 @@ function Schedule() {
         }
       })
       .filter(Boolean)
-  }, [projectsById])
+  }, [projectsById, selectedProjectId])
 
   const sideMilestones = useMemo(() => {
-    const visibleMilestones = milestoneEntries.filter(
+    const scopedMilestones = selectedProjectId
+      ? milestoneEntries.filter((milestone) => milestone.projectId === selectedProjectId)
+      : milestoneEntries
+    const visibleMilestones = scopedMilestones.filter(
       (milestone) =>
         milestone.dateValue >= timeline.slots[0].start &&
         milestone.dateValue <= timeline.slots[timeline.slots.length - 1].end,
@@ -453,18 +486,23 @@ function Schedule() {
       return visibleMilestones.slice(0, 5)
     }
 
-    return milestoneEntries.slice(0, 5)
-  }, [milestoneEntries, timeline.slots])
+    return scopedMilestones.slice(0, 5)
+  }, [milestoneEntries, selectedProjectId, timeline.slots])
 
   useEffect(() => {
-    if (currentPage > pageCount) {
-      setCurrentPage(pageCount)
+    const handleHashChange = () => {
+      setSelectedProjectId(parseProjectFilterFromHash(window.location.hash))
+      setCurrentPage(1)
     }
-  }, [currentPage, pageCount])
 
-  useEffect(() => {
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  function handleViewChange(nextView) {
+    setSelectedView(nextView)
     setCurrentPage(1)
-  }, [selectedView])
+  }
 
   function handleStatusFilterChange(nextFilter) {
     setSelectedStatusFilter(nextFilter)
@@ -493,11 +531,11 @@ function Schedule() {
   }
 
   function handlePrevPage() {
-    setCurrentPage((page) => Math.max(1, page - 1))
+    setCurrentPage((page) => Math.max(1, Math.min(page, pageCount) - 1))
   }
 
   function handleNextPage() {
-    setCurrentPage((page) => Math.min(pageCount, page + 1))
+    setCurrentPage((page) => Math.min(pageCount, Math.min(page, pageCount) + 1))
   }
 
   function renderProjectTimeline(project) {
@@ -549,7 +587,11 @@ function Schedule() {
       <header className="schedule-header">
         <div className="schedule-title-group">
           <h1>Harmonogram</h1>
-          <p>Zbiorczy harmonogram wszystkich projektów</p>
+          <p>
+            {selectedProject
+              ? `Harmonogram projektu ${selectedProject.name}`
+              : 'Zbiorczy harmonogram wszystkich projektów'}
+          </p>
         </div>
 
         <div className="schedule-header-actions">
@@ -587,7 +629,7 @@ function Schedule() {
             <span>Widok:</span>
             <select
               value={selectedView}
-              onChange={(event) => setSelectedView(event.target.value)}
+              onChange={(event) => handleViewChange(event.target.value)}
               aria-label="Wybierz widok harmonogramu"
             >
               {scheduleViewOptions.map((option) => (
@@ -669,6 +711,13 @@ function Schedule() {
             <SlidersHorizontal size={15} aria-hidden="true" />
             <span>Filtry</span>
           </button>
+
+          {selectedProject && (
+            <div className="schedule-project-context">
+              <span>{selectedProject.name}</span>
+              <a href="#/harmonogram">Pokaż wszystkie</a>
+            </div>
+          )}
         </div>
       </section>
 

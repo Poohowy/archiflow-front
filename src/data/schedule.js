@@ -51,8 +51,62 @@ const scheduleStagePlans = {
       id: 'construction',
       label: 'Projekt budowlany',
       startDate: '2026-07-08',
-      endDate: '2026-09-09',
+      endDate: '2026-08-28',
       state: 'active',
+      operationalStatus: 'Oczekuje na akceptację klienta',
+      responsibleId: 'katarzyna-lewandowska',
+      approval: {
+        sentToClientAt: '2026-08-12',
+        responseDeadline: '2026-08-19',
+        status: 'pending',
+      },
+      nextAction: {
+        title: 'Skontaktuj się z klientem w sprawie akceptacji dokumentacji',
+        details: 'Brak decyzji klienta blokuje formalne zamknięcie etapu i start kolejnego zakresu.',
+      },
+      document: {
+        name: 'Projekt_budowlany_v2.pdf',
+        version: 2,
+        addedAt: '2026-08-12T10:42:00',
+        authorId: 'katarzyna-lewandowska',
+        status: 'Oczekuje na akceptację',
+      },
+      reviewRounds: {
+        used: 2,
+        total: 3,
+      },
+      scheduleImpact: {
+        type: 'warning',
+        title: 'Etap wpływa na harmonogram projektu',
+        details:
+          'Bez akceptacji klienta etap Projekt wykonawczy nie może ruszyć zgodnie z planem i może przesunąć się o 4 dni.',
+      },
+      history: [
+        {
+          id: 'villa-construction-history-1',
+          type: 'document-upload',
+          title: 'Dodano nową wersję dokumentacji',
+          details: 'Projekt_budowlany_v2.pdf',
+          date: '2026-08-12',
+          time: '10:42',
+        },
+        {
+          id: 'villa-construction-history-2',
+          type: 'document-sent',
+          title: 'Dokumentacja przekazana klientowi',
+          details: 'ABC Development',
+          date: '2026-08-12',
+          time: '12:05',
+        },
+        {
+          id: 'villa-construction-history-3',
+          type: 'client-reminder',
+          title: 'Wysłano przypomnienie o akceptacji',
+          details: 'Kanał: e-mail',
+          date: '2026-08-17',
+          time: '09:30',
+        },
+      ],
     },
     {
       id: 'execution',
