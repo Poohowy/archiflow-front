@@ -1,0 +1,128 @@
+.panel-placeholder-page {
+  min-height: 100vh;
+  padding: 38px 28px 26px;
+}
+
+.panel-placeholder-content {
+  width: 100%;
+  max-width: 760px;
+  min-height: calc(100vh - 64px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-placeholder-brand {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 2px;
+}
+
+.panel-placeholder-brand-name {
+  font-size: 17px;
+  font-weight: 630;
+  letter-spacing: -0.2px;
+  color: #0b1d3a;
+}
+
+.panel-placeholder-card {
+  margin-top: 26px;
+  padding: 26px;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(20, 35, 60, 0.03);
+}
+
+.panel-placeholder-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #edf3fa;
+  color: #356b9f;
+}
+
+.panel-placeholder-card h1 {
+  margin: 16px 0 0;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 650;
+  letter-spacing: -0.5px;
+  color: #172033;
+}
+
+.panel-placeholder-card p {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #6f7b8f;
+}
+
+.panel-placeholder-card button {
+  margin-top: 22px;
+  width: fit-content;
+  height: 40px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 8px;
+  background: #1d4f91;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 560;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.panel-placeholder-card button:hover {
+  background: #17447d;
+}
+
+.panel-placeholder-footer {
+  margin-top: auto;
+  padding: 34px 0 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+
+.panel-placeholder-footer-logo {
+  width: 138px;
+  max-width: 56%;
+  height: auto;
+  opacity: 0.86;
+}
+
+.panel-placeholder-footer small {
+  font-size: 11px;
+  color: #99a3b2;
+}
+
+@media (max-width: 760px) {
+  .panel-placeholder-page {
+    padding-top: 28px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .panel-placeholder-content {
+    min-height: calc(100vh - 44px);
+  }
+
+  .panel-placeholder-card {
+    margin-top: 22px;
+    padding: 20px;
+  }
+
+  .panel-placeholder-card h1 {
+    font-size: 25px;
+  }
+}

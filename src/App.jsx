@@ -7,14 +7,19 @@ import StageDetails from './pages/StageDetails'
 import Schedule from './pages/Schedule'
 import Team from './pages/Team'
 import Clients from './pages/Clients'
+import PanelSelection from './pages/PanelSelection'
+import PanelPlaceholder from './pages/PanelPlaceholder'
 import './index.css'
 
 const views = {
+  panelSelection: 'panelSelection',
   dashboard: 'dashboard',
   projects: 'projects',
   schedule: 'schedule',
   team: 'team',
   clients: 'clients',
+  corporateClientPanel: 'corporateClientPanel',
+  individualClientPanel: 'individualClientPanel',
 }
 
 function getHashPath(hash) {
@@ -66,14 +71,42 @@ function getRouteFromHash(hash) {
     return { view: views.clients, projectId: null, stageId: null }
   }
 
+  if (
+    hashPath.startsWith('#/panel-klienta-korporacyjnego') ||
+    hashPath.startsWith('#/panel-corporate-client')
+  ) {
+    return { view: views.corporateClientPanel, projectId: null, stageId: null }
+  }
+
+  if (
+    hashPath.startsWith('#/panel-klienta-indywidualnego') ||
+    hashPath.startsWith('#/panel-individual-client')
+  ) {
+    return { view: views.individualClientPanel, projectId: null, stageId: null }
+  }
+
+  if (
+    hashPath === '' ||
+    hashPath === '#' ||
+    hashPath === '#/' ||
+    hashPath.startsWith('#/wybor-panelu') ||
+    hashPath.startsWith('#/panel-selection')
+  ) {
+    return { view: views.panelSelection, projectId: null, stageId: null }
+  }
+
   if (hashPath.startsWith('#/dashboard')) {
     return { view: views.dashboard, projectId: null, stageId: null }
   }
 
-  return { view: views.dashboard, projectId: null, stageId: null }
+  return { view: views.panelSelection, projectId: null, stageId: null }
 }
 
 function getHashForView(view) {
+  if (view === views.panelSelection) {
+    return '#/wybor-panelu'
+  }
+
   if (view === views.projects) {
     return '#/projekty'
   }
@@ -88,6 +121,14 @@ function getHashForView(view) {
 
   if (view === views.clients) {
     return '#/klienci'
+  }
+
+  if (view === views.corporateClientPanel) {
+    return '#/panel-klienta-korporacyjnego'
+  }
+
+  if (view === views.individualClientPanel) {
+    return '#/panel-klienta-indywidualnego'
   }
 
   return '#/dashboard'
@@ -107,7 +148,7 @@ function App() {
 
   useEffect(() => {
     if (!window.location.hash) {
-      window.location.hash = getHashForView(views.dashboard)
+      window.location.hash = getHashForView(views.panelSelection)
     }
   }, [])
 
@@ -122,9 +163,43 @@ function App() {
     setRoute({ view, projectId: null, stageId: null })
   }
 
+  if (route.view === views.panelSelection) {
+    return (
+      <PanelSelection
+        onOpenOwnerPanel={() => handleNavigate(views.dashboard)}
+        onOpenCorporateClientPanel={() => handleNavigate(views.corporateClientPanel)}
+        onOpenIndividualClientPanel={() => handleNavigate(views.individualClientPanel)}
+      />
+    )
+  }
+
+  if (route.view === views.corporateClientPanel) {
+    return (
+      <PanelPlaceholder
+        title="Panel klienta korporacyjnego"
+        description="Ten panel jest w przygotowaniu."
+        onBackToSelection={() => handleNavigate(views.panelSelection)}
+      />
+    )
+  }
+
+  if (route.view === views.individualClientPanel) {
+    return (
+      <PanelPlaceholder
+        title="Panel klienta indywidualnego"
+        description="Ten panel jest w przygotowaniu."
+        onBackToSelection={() => handleNavigate(views.panelSelection)}
+      />
+    )
+  }
+
   return (
     <div className="app">
-      <Sidebar activeView={route.view} onNavigate={handleNavigate} />
+      <Sidebar
+        activeView={route.view}
+        onNavigate={handleNavigate}
+        onPanelSelection={() => handleNavigate(views.panelSelection)}
+      />
 
       <main className="main-content">
         {route.view === views.dashboard && <Dashboard />}

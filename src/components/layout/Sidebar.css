@@ -26,50 +26,18 @@
     margin-bottom: 28px;
   }
   
-  .brand-mark {
-    width: 27px;
-    height: 27px;
-    position: relative;
+.brand-logo-shell {
+  width: 27px;
+  height: 27px;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  .brand-mark::before,
-  .brand-mark::after,
-  .brand-mark span {
-    content: '';
-    position: absolute;
-    display: block;
-    border: 1.8px solid #ffffff;
-  }
-  
-  .brand-mark::before {
-    width: 18px;
-    height: 14px;
-    transform: rotate(30deg) skewX(-8deg);
-    border-radius: 2px;
-  }
-  
-  .brand-mark::after {
-    width: 11px;
-    height: 8px;
-    transform: rotate(30deg);
-    border-color: #4f8cff;
-    background: #0b1d3a;
-  }
-  
-  .brand-mark span:first-child {
-    width: 7px;
-    height: 7px;
-    border: 0;
-    border-left: 1.8px solid #ffffff;
-    border-bottom: 1.8px solid #ffffff;
-    transform: rotate(-15deg);
-  }
-  
-  .brand-mark span:last-child {
-    display: none;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.brand-logo {
+  display: block;
   }
   
   .brand-name {

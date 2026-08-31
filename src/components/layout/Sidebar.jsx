@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import ArchiFlowLogo from '../branding/ArchiFlowLogo'
 import HelpModal from '../help/HelpModal'
 import './Sidebar.css'
 
@@ -92,9 +93,10 @@ function Icon({ name }) {
         <path d="M12 17h.01" />
       </>
     ),
-    logout: (
+    panelSelection: (
       <>
-        <path d="M10 5H5v14h5M15 8l4 4-4 4M19 12H9" />
+        <path d="M10 7l-5 5 5 5" />
+        <path d="M5 12h14" />
       </>
     ),
   }
@@ -115,7 +117,7 @@ function Icon({ name }) {
   )
 }
 
-function Sidebar({ activeView, onNavigate }) {
+function Sidebar({ activeView, onNavigate, onPanelSelection }) {
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const handleCloseHelp = useCallback(() => {
     setIsHelpOpen(false)
@@ -149,11 +151,9 @@ function Sidebar({ activeView, onNavigate }) {
       <aside className="sidebar">
         <div className="sidebar-top">
           <div className="brand">
-            <div className="brand-mark">
-              <span />
-              <span />
+            <div className="brand-logo-shell" aria-hidden="true">
+              <ArchiFlowLogo size={18} title="" className="brand-logo" />
             </div>
-
             <span className="brand-name">ArchiFlow</span>
           </div>
 
@@ -194,12 +194,15 @@ function Sidebar({ activeView, onNavigate }) {
           </div>
 
           <a
-            href="#"
+            href="#/wybor-panelu"
             className="logout-button"
-            onClick={(event) => event.preventDefault()}
+            onClick={(event) => {
+              event.preventDefault()
+              onPanelSelection?.()
+            }}
           >
-            <Icon name="logout" />
-            <span>Wyloguj się</span>
+            <Icon name="panelSelection" />
+            <span>Wróć do wyboru panelu</span>
           </a>
         </div>
       </aside>
